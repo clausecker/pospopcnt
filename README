@@ -11,3 +11,64 @@ An enhanced implementation performs one CSA step to reduce 96 bytes into
 chains.  This one achieves up to 16 GB/s.
 
 This code is the result of a Stack Overflow question: https://stackoverflow.com/q/63248047/417501
+
+Benchmark results on a Intel(R) Xeon(R) W-2133 CPU @ 3.60GHz processor.
+
+goos: linux
+goarch: amd64
+BenchmarkReference/10-12	 	14850159	        79.2 ns/op	 126.19 MB/s
+BenchmarkReference/32-12	 	 4388044	       257 ns/op	 124.54 MB/s
+BenchmarkReference/1000-12         	  129520	      7926 ns/op	 126.17 MB/s
+BenchmarkReference/2000-12         	   67666	     15809 ns/op	 126.51 MB/s
+BenchmarkReference/4000-12         	   38236	     31728 ns/op	 126.07 MB/s
+BenchmarkReference/10000-12        	   14696	     79195 ns/op	 126.27 MB/s
+BenchmarkReference/100000-12       	    1286	    793724 ns/op	 125.99 MB/s
+BenchmarkReference/10000000-12     	      14	  77857209 ns/op	 128.44 MB/s
+BenchmarkReference/1000000000-12   	       1	7799197541 ns/op	 128.22 MB/s
+BenchmarkScalarReg/10-12           	49232150	        23.7 ns/op	 422.76 MB/s
+BenchmarkScalarReg/32-12           	16639712	        72.4 ns/op	 442.27 MB/s
+BenchmarkScalarReg/1000-12         	  536235	      2249 ns/op	 444.64 MB/s
+BenchmarkScalarReg/2000-12         	  271501	      4502 ns/op	 444.20 MB/s
+BenchmarkScalarReg/4000-12         	  113698	      9022 ns/op	 443.35 MB/s
+BenchmarkScalarReg/10000-12        	   50053	     22410 ns/op	 446.22 MB/s
+BenchmarkScalarReg/100000-12       	    5304	    223736 ns/op	 446.96 MB/s
+BenchmarkScalarReg/10000000-12     	      50	  22001042 ns/op	 454.52 MB/s
+BenchmarkScalarReg/1000000000-12   	       1	2196325065 ns/op	 455.31 MB/s
+BenchmarkScalarMem/10-12           	33094110	        35.4 ns/op	 282.37 MB/s
+BenchmarkScalarMem/32-12           	 9793666	       105 ns/op	 305.68 MB/s
+BenchmarkScalarMem/1000-12         	  375247	      3186 ns/op	 313.87 MB/s
+BenchmarkScalarMem/2000-12         	  189091	      6323 ns/op	 316.32 MB/s
+BenchmarkScalarMem/4000-12         	   83055	     12605 ns/op	 317.34 MB/s
+BenchmarkScalarMem/10000-12        	   36316	     31638 ns/op	 316.07 MB/s
+BenchmarkScalarMem/100000-12       	    3705	    318711 ns/op	 313.76 MB/s
+BenchmarkScalarMem/10000000-12     	      37	  31516139 ns/op	 317.30 MB/s
+BenchmarkScalarMem/1000000000-12   	       1	3148713421 ns/op	 317.59 MB/s
+BenchmarkReg/10-12                 	48235050	        24.2 ns/op	 414.01 MB/s
+BenchmarkReg/32-12                 	189887809	         6.10 ns/op	5246.14 MB/s
+BenchmarkReg/1000-12               	 9680595	       108 ns/op	9289.76 MB/s
+BenchmarkReg/2000-12               	 5362185	       209 ns/op	9589.14 MB/s
+BenchmarkReg/4000-12               	 3257700	       360 ns/op	11109.93 MB/s
+BenchmarkReg/10000-12              	 1280316	       903 ns/op	11076.41 MB/s
+BenchmarkReg/100000-12             	  117214	      8684 ns/op	11516.04 MB/s
+BenchmarkReg/10000000-12           	    1293	    916605 ns/op	10909.82 MB/s
+BenchmarkReg/1000000000-12         	      12	  91449048 ns/op	10935.05 MB/s
+BenchmarkRegCSA/10-12              	48241629	        24.1 ns/op	 415.20 MB/s
+BenchmarkRegCSA/32-12              	15117241	        80.5 ns/op	 397.51 MB/s
+BenchmarkRegCSA/1000-12            	 7144021	       149 ns/op	6689.47 MB/s
+BenchmarkRegCSA/2000-12            	 3831850	       296 ns/op	6752.09 MB/s
+BenchmarkRegCSA/4000-12            	 3085072	       385 ns/op	10401.89 MB/s
+BenchmarkRegCSA/10000-12           	 1725921	       644 ns/op	15537.68 MB/s
+BenchmarkRegCSA/100000-12          	  190891	      6243 ns/op	16017.33 MB/s
+BenchmarkRegCSA/10000000-12        	    1622	    697204 ns/op	14343.01 MB/s
+BenchmarkRegCSA/1000000000-12      	      16	  68016625 ns/op	14702.29 MB/s
+BenchmarkMem/10-12                 	32597307	        35.8 ns/op	 279.32 MB/s
+BenchmarkMem/32-12                 	193028205	         5.96 ns/op	5370.26 MB/s
+BenchmarkMem/1000-12               	 7207645	       148 ns/op	6759.80 MB/s
+BenchmarkMem/2000-12               	 3979840	       287 ns/op	6977.72 MB/s
+BenchmarkMem/4000-12               	 2474928	       469 ns/op	8529.71 MB/s
+BenchmarkMem/10000-12              	  968577	      1209 ns/op	8270.33 MB/s
+BenchmarkMem/100000-12             	   91872	     11607 ns/op	8615.36 MB/s
+BenchmarkMem/10000000-12           	     990	   1198605 ns/op	8343.03 MB/s
+BenchmarkMem/1000000000-12         	       9	 119827380 ns/op	8345.34 MB/s
+PASS
+ok  	pospopcnt	105.759s
