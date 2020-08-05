@@ -70,29 +70,29 @@ scalar:	ADDQ $32, CX			// undo last subtraction
 loop:	MOVBLZX (SI), AX		// load a byte from buf
 	INCQ SI				// advance past it
 
-	BTL $0, AX			// is bit 0 set?
-	ADCL $0, R8			// add it to R8
+	SHRL $1, AX			// CF=LSB, shift byte to the right
+	ADCL $0, R8			// add CF to R8
 
-	BTL $1, AX			// is bit 1 set?
-	ADCL $0, R9			// add it to R9
+	SHRL $1, AX
+	ADCL $0, R9			// add CF to R9
 
-	BTL $2, AX			// is bit 2 set?
-	ADCL $0, R10			// add it to R10
+	SHRL $1, AX
+	ADCL $0, R10			// add CF to R10
 
-	BTL $3, AX			// is bit 3 set?
-	ADCL $0, R11			// add it to R11
+	SHRL $1, AX
+	ADCL $0, R11			// add CF to R11
 
-	BTL $4, AX			// is bit 4 set?
-	ADCL $0, R12			// add it to R12
+	SHRL $1, AX
+	ADCL $0, R12			// add CF to R12
 
-	BTL $5, AX			// is bit 5 set?
-	ADCL $0, R13			// add it to R13
+	SHRL $1, AX
+	ADCL $0, R13			// add CF to R13
 
-	BTL $6, AX			// is bit 6 set?
-	ADCL $0, R14			// add it to R14
+	SHRL $1, AX
+	ADCL $0, R14			// add CF to R14
 
-	BTL $7, AX			// is bit 7 set?
-	ADCL $0, R15			// add it to R15
+	SHRL $1, AX
+	ADCL $0, R15			// add CF to R15
 
 	DECQ CX				// mark this byte as done
 	JNE loop			// and proceed if any bytes are left

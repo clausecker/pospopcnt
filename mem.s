@@ -60,28 +60,28 @@ scalar:	ADDQ $32, CX			// undo last subtraction
 loop:	MOVBLZX (SI), AX		// load a byte from buf
 	INCQ SI				// advance past it
 
-	BTL $0, AX			// is bit 0 set?
+	SHRL $1, AX
 	ADCL $0, 4*0(DI)		// add it to the counters
 
-	BTL $1, AX			// is bit 1 set?
+	SHRL $1, AX
 	ADCL $0, 4*1(DI)		// add it to the counters
 
-	BTL $2, AX			// is bit 2 set?
+	SHRL $1, AX
 	ADCL $0, 4*2(DI)		// add it to the counters
 
-	BTL $3, AX			// is bit 3 set?
+	SHRL $1, AX
 	ADCL $0, 4*3(DI)		// add it to the counters
 
-	BTL $4, AX			// is bit 4 set?
+	SHRL $1, AX
 	ADCL $0, 4*4(DI)		// add it to the counters
 
-	BTL $5, AX			// is bit 5 set?
+	SHRL $1, AX
 	ADCL $0, 4*5(DI)		// add it to the counters
 
-	BTL $6, AX			// is bit 6 set?
+	SHRL $1, AX
 	ADCL $0, 4*6(DI)		// add it to the counters
 
-	BTL $7, AX			// is bit 7 set?
+	SHRL $1, AX
 	ADCL $0, 4*7(DI)		// add it to the counters
 
 	DECQ CX				// mark this byte as done
