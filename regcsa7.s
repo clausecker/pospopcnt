@@ -17,9 +17,9 @@ TEXT ·PospopcntRegCSA7(SB),NOSPLIT,$0-32
 	MOVL 4*7(DI), R15
 
 	SUBQ $7*32, CX			// pre-decrement CX
-	JL scalar
+	JL vec3
 
-vector:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
+vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VMOVDQU 1*32(SI), Y1
 	VMOVDQU 2*32(SI), Y2
 	VMOVDQU 3*32(SI), Y3
@@ -156,9 +156,58 @@ vector:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	ADDL AX, R8
 
 	SUBQ $7*32, CX
+	JGE vec7			// repeat as long as bytes are left
+
+vec3:	ADDQ $7*32, CX			// undo last subtraction
+	SUBQ $32, CX			// pre-subtract 32 bit from CX
+	JL scalar
+
+vector:	VMOVDQU (SI), Y0		// load 32 bytes from buf
+	ADDQ $32, SI			// advance SI past them
+
+	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
+	POPCNTL AX, AX			// count population of AX
+	ADDL AX, R15			// add to counter
+	VPADDD Y0, Y0, Y0		// shift Y0 left by one place
+
+	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
+	POPCNTL AX, AX			// count population of AX
+	ADDL AX, R14			// add to counter
+	VPADDD Y0, Y0, Y0		// shift Y0 left by one place
+
+	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
+	POPCNTL AX, AX			// count population of AX
+	ADDL AX, R13			// add to counter
+	VPADDD Y0, Y0, Y0		// shift Y0 left by one place
+
+	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
+	POPCNTL AX, AX			// count population of AX
+	ADDL AX, R12			// add to counter
+	VPADDD Y0, Y0, Y0		// shift Y0 left by one place
+
+	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
+	POPCNTL AX, AX			// count population of AX
+	ADDL AX, R11			// add to counter
+	VPADDD Y0, Y0, Y0		// shift Y0 left by one place
+
+	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
+	POPCNTL AX, AX			// count population of AX
+	ADDL AX, R10			// add to counter
+	VPADDD Y0, Y0, Y0		// shift Y0 left by one place
+
+	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
+	POPCNTL AX, AX			// count population of AX
+	ADDL AX, R9			// add to counter
+	VPADDD Y0, Y0, Y0		// shift Y0 left by one place
+
+	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
+	POPCNTL AX, AX			// count population of AX
+	ADDL AX, R8			// add to counter
+
+	SUBQ $32, CX
 	JGE vector			// repeat as long as bytes are left
 
-scalar:	ADDQ $7*32, CX			// undo last subtraction
+scalar:	ADDQ $32, CX			// undo last subtraction
 	JE done				// if CX=0, there's nothing left
 
 loop:	MOVBLZX (SI), AX		// load a byte from buf
