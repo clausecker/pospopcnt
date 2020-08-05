@@ -10,6 +10,7 @@ TEXT ·PospopcntMem(SB),NOSPLIT,$0-32
 	JL scalar
 
 vector:	VMOVDQU (SI), Y0		// load 32 bytes from buf
+	PREFETCHT1 384(SI)
 	ADDQ $32, SI			// advance SI past them
 
 	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX

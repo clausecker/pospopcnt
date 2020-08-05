@@ -20,6 +20,7 @@ TEXT ·PospopcntReg(SB),NOSPLIT,$0-32
 	JL scalar
 
 vector:	VMOVDQU (SI), Y0		// load 32 bytes from buf
+	PREFETCHT0 384(SI)		// prefetch some data
 	ADDQ $32, SI			// advance SI past them
 
 	VPMOVMSKB Y0, AX		// move MSB of Y0 bytes to AX
