@@ -1,7 +1,7 @@
 #include "textflag.h"
 
 // func PospopcntRegCSA(counts *[8]int32, buf []byte)
-TEXT ·PospopcntRegCSA(SB),NOSPLIT,$0-32
+TEXT ·PospopcntRegCSA3(SB),NOSPLIT,$0-32
 	MOVQ counts+0(FP), DI
 	MOVQ buf_base+8(FP), SI		// SI = &buf[0]
 	MOVQ buf_len+16(FP), CX		// CX = len(buf)
