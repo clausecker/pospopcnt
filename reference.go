@@ -3,6 +3,10 @@ package pospopcnt
 // vectorised positional popcount with counters in registers
 func PospopcntReg(counts *[8]int32, buf []byte)
 
+// vectorised positional popcount with counters in registers
+// and one CSA reduction
+func PospopcntRegCSA(counts *[8]int32, buf []byte)
+
 // vectorised positional popcount with counters in memory
 func PospopcntMem(counts *[8]int32, buf []byte)
 
