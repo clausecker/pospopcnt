@@ -1,0 +1,13 @@
+An 8 bit positional population count implementation for Go using AVX-2.
+
+The algorithm gathers corresponding bits of a the 32 bytes in an AVX
+register using vpmovmskb and then performs scalar popcnt instructions
+to compute the populations.  The 8 counters are kept in 8 general
+purpose registers for the duration of the algorithm.  This algorithm
+achieves up to 11 GB/s on Haswell and Skylake.
+
+An enhanced implementation performs one CSA step to reduce 96 bytes into
+64 before adding the results to counters with interleaved dependency
+chains.  This one achieves up to 16 GB/s.
+
+This code is the result of a Stack Overflow question: https://stackoverflow.com/q/63248047/417501
