@@ -74,7 +74,16 @@ func testHarness(pospopcnt func(*[8]int32, []byte), t *testing.T) {
 	pospopcnt(&testCounts, buf)
 
 	if refCounts != testCounts {
-		t.Error("counts don't match")
+		t.Error("long counts don't match")
+	}
+
+	buf = []byte{55}
+
+	PospopcntReference(&refCounts, buf)
+	pospopcnt(&testCounts, buf)
+
+	if refCounts != testCounts {
+		t.Error("single byte counts don't match")
 	}
 }
 
