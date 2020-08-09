@@ -1,5 +1,12 @@
 #include "textflag.h"
 
+#define CSA(A, B, C, D) \
+	VPAND A, B, D \
+	VPXOR A, B, A \
+	VPAND A, C, B \
+	VPXOR A, C, A \
+	VPOR  B, D, B
+
 // func PospopcntRegCSA7(counts *[8]int32, buf []byte)
 TEXT ·PospopcntRegCSA7(SB),NOSPLIT,$0-32
 	MOVQ counts+0(FP), DI
@@ -22,37 +29,22 @@ TEXT ·PospopcntRegCSA7(SB),NOSPLIT,$0-32
 vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VMOVDQU 1*32(SI), Y1
 	VMOVDQU 2*32(SI), Y2
+	CSA(Y0, Y1, Y2, Y7)		// Y0 = 0^1^2, Y1 = [0+1+2]
+
 	VMOVDQU 3*32(SI), Y3
 	VMOVDQU 4*32(SI), Y4
 	VMOVDQU 5*32(SI), Y5
-	VMOVDQU 6*32(SI), Y6
-	ADDQ $7*32, SI
-	PREFETCHT0 10*32(SI)
-	PREFETCHT0 12*32(SI)
-	PREFETCHT0 14*32(SI)
-	PREFETCHT0 16*32(SI)
+	CSA(Y3, Y4, Y5, Y7)		// Y3 = 3^4^5, Y4 = [3+4+5]
 
-	VPAND Y0, Y1, Y7		// Y7 = 0&1
-	VPXOR Y0, Y1, Y0		// Y0 = 0^1
-	VPAND Y2, Y3, Y1		// Y1 = 2&3
-	VPXOR Y2, Y3, Y2		// Y2 = 2^3
-	VPAND Y0, Y4, Y3		// Y3 = (0^1)&4
-	VPXOR Y0, Y4, Y0		// Y0 = 0^1^4
-	VPAND Y2, Y5, Y4		// Y4 = (2^3)&5
-	VPXOR Y2, Y5, Y2		// Y2 = 2^3^5
-	VPOR Y3, Y7, Y3			// Y3 = 0&1|(0^1)&4 = carry(0+1+4)
-	VPOR Y1, Y4, Y1			// Y1 = 2&3|(2^3)&5 = carry(2+3+5)
-	VPAND Y0, Y6, Y4		// Y4 = (0^1^4)&6
-	VPXOR Y0, Y6, Y0		// Y0 = 0^1^4^6
-	VPAND Y0, Y2, Y5		// Y5 = (0^1^4^6)&(2^3^5)
-	VPXOR Y0, Y2, Y0		// Y0 = 0^1^2^3^4^5^6
-	VPOR Y4, Y5, Y2			// Y2 = (0^1^4)&6|(0^1^4^6)&(2^3^5) = carry((0^1^4)+(2^3^5)+6)
-	VPAND Y1, Y3, Y4		// Y4 = carry(2+3+5)&carry(0+1+4)
-	VPXOR Y1, Y3, Y1		// Y1 = carry(2+3+5)^carry(0+1+4)
-	VPAND Y1, Y2, Y3		// Y3 = (carry(2+3+5)^carry(0+1+4))&carry((0^1^4)+(2^3^5)+6)
-	VPXOR Y1, Y2, Y1		// Y1 = carry1(0+1+2+3+4+5+6)
-	VPOR Y3, Y4, Y2			// Y2 = carry2(0+1+2+3+4+5+6)
-					// Y2:Y1:Y0 = Y0+Y1+Y2+Y3+Y4+Y5+Y6
+	VMOVDQU 6*32(SI), Y6
+	CSA(Y0, Y3, Y6, Y7)		// Y0 = 0^1^2^3^4^5^6, Y3 = [[0+1+2]+[3+4+5]+6]
+	CSA(Y1, Y3, Y4, Y7)		// Y1 = [0+1+2+3+4+5+6], Y3 = [[0+1+2+3+4+5+6]
+
+	ADDQ $7*32, SI
+	PREFETCHT0 16*32(SI)
+	PREFETCHT0 18*32(SI)
+	PREFETCHT0 20*32(SI)
+	PREFETCHT0 22*32(SI)
 
 	VPMOVMSKB Y0, AX
 	VPADDB Y0, Y0, Y0
@@ -60,8 +52,8 @@ vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VPMOVMSKB Y1, BX
 	VPADDB Y1, Y1, Y1
 	POPCNTL BX, BX
-	VPMOVMSKB Y2, DX
-	VPADDB Y2, Y2, Y2
+	VPMOVMSKB Y3, DX
+	VPADDB Y3, Y3, Y3
 	POPCNTL DX, DX
 	LEAL (AX)(BX*2), AX
 	LEAL (AX)(DX*4), AX
@@ -73,8 +65,8 @@ vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VPMOVMSKB Y1, BX
 	VPADDB Y1, Y1, Y1
 	POPCNTL BX, BX
-	VPMOVMSKB Y2, DX
-	VPADDB Y2, Y2, Y2
+	VPMOVMSKB Y3, DX
+	VPADDB Y3, Y3, Y3
 	POPCNTL DX, DX
 	LEAL (AX)(BX*2), AX
 	LEAL (AX)(DX*4), AX
@@ -86,8 +78,8 @@ vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VPMOVMSKB Y1, BX
 	VPADDB Y1, Y1, Y1
 	POPCNTL BX, BX
-	VPMOVMSKB Y2, DX
-	VPADDB Y2, Y2, Y2
+	VPMOVMSKB Y3, DX
+	VPADDB Y3, Y3, Y3
 	POPCNTL DX, DX
 	LEAL (AX)(BX*2), AX
 	LEAL (AX)(DX*4), AX
@@ -99,8 +91,8 @@ vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VPMOVMSKB Y1, BX
 	VPADDB Y1, Y1, Y1
 	POPCNTL BX, BX
-	VPMOVMSKB Y2, DX
-	VPADDB Y2, Y2, Y2
+	VPMOVMSKB Y3, DX
+	VPADDB Y3, Y3, Y3
 	POPCNTL DX, DX
 	LEAL (AX)(BX*2), AX
 	LEAL (AX)(DX*4), AX
@@ -112,8 +104,8 @@ vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VPMOVMSKB Y1, BX
 	VPADDB Y1, Y1, Y1
 	POPCNTL BX, BX
-	VPMOVMSKB Y2, DX
-	VPADDB Y2, Y2, Y2
+	VPMOVMSKB Y3, DX
+	VPADDB Y3, Y3, Y3
 	POPCNTL DX, DX
 	LEAL (AX)(BX*2), AX
 	LEAL (AX)(DX*4), AX
@@ -125,8 +117,8 @@ vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VPMOVMSKB Y1, BX
 	VPADDB Y1, Y1, Y1
 	POPCNTL BX, BX
-	VPMOVMSKB Y2, DX
-	VPADDB Y2, Y2, Y2
+	VPMOVMSKB Y3, DX
+	VPADDB Y3, Y3, Y3
 	POPCNTL DX, DX
 	LEAL (AX)(BX*2), AX
 	LEAL (AX)(DX*4), AX
@@ -138,8 +130,8 @@ vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	VPMOVMSKB Y1, BX
 	VPADDB Y1, Y1, Y1
 	POPCNTL BX, BX
-	VPMOVMSKB Y2, DX
-	VPADDB Y2, Y2, Y2
+	VPMOVMSKB Y3, DX
+	VPADDB Y3, Y3, Y3
 	POPCNTL DX, DX
 	LEAL (AX)(BX*2), AX
 	LEAL (AX)(DX*4), AX
@@ -149,7 +141,7 @@ vec7:	VMOVDQU 0*32(SI), Y0		// load 224 bytes from buf into Y0--Y6
 	POPCNTL AX, AX
 	VPMOVMSKB Y1, BX
 	POPCNTL BX, BX
-	VPMOVMSKB Y2, DX
+	VPMOVMSKB Y3, DX
 	POPCNTL DX, DX
 	LEAL (AX)(BX*2), AX
 	LEAL (AX)(DX*4), AX
