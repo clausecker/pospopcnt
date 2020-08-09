@@ -35,6 +35,10 @@ func TestMem(t *testing.T) {
 	testHarness(PospopcntMem, t)
 }
 
+func TestMemCSA15(t *testing.T) {
+	testHarness(PospopcntMemCSA15, t)
+}
+
 func BenchmarkReference(b *testing.B) {
 	outerHarness(PospopcntReference, b)
 }
@@ -61,6 +65,10 @@ func BenchmarkRegCSA7(b *testing.B) {
 
 func BenchmarkRegCSA15(b *testing.B) {
 	outerHarness(PospopcntRegCSA15, b)
+}
+
+func BenchmarkMemCSA15(b *testing.B) {
+	outerHarness(PospopcntMemCSA15, b)
 }
 
 func BenchmarkMem(b *testing.B) {

@@ -16,6 +16,10 @@ func PospopcntRegCSA7(counts *[8]int32, buf []byte)
 func PospopcntRegCSA15(counts *[8]int32, buf []byte)
 
 // vectorised positional popcount with counters in memory
+// and 15-way CSA reduction
+func PospopcntMemCSA15(counts *[8]int32, buf []byte)
+
+// vectorised positional popcount with counters in memory
 func PospopcntMem(counts *[8]int32, buf []byte)
 
 // scalar positional popcount with counters in registers
