@@ -13,7 +13,7 @@ chains.  This one achieves up to 16 GB/s.
 This code is the result of a Stack Overflow question: https://stackoverflow.com/q/63248047/417501
 
 This code is an experiment and should not be integrated into third party
-programs.  I'll publish a production-ready package shortly.
+programs.  Use http://github.com/fuzxxl/pospop instead.
 
 Benchmark results on a Intel(R) Xeon(R) W-2133 CPU @ 3.60GHz processor.
 
